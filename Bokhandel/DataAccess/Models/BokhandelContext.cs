@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -9,6 +10,7 @@ namespace Bokhandel.Models
     {
         public BokhandelContext()
         {
+            
         }
 
         public BokhandelContext(DbContextOptions<BokhandelContext> options)

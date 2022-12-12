@@ -11,5 +11,11 @@ namespace Bokhandel.Models
 
         public virtual Butiker Butik { get; set; } = null!;
         public virtual Böcker IsbnNavigation { get; set; } = null!;
+
+        public void ValtLagerSaldo()
+        {
+            Butiker minButik = new Butiker();
+            minButik.ButikId = ButikId;
+        }
     }
 }
