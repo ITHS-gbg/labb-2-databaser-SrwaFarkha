@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Console = System.Console;
 
 namespace Bokhandel.Models
 {
@@ -13,5 +14,7 @@ namespace Bokhandel.Models
         public int FörfattarId { get; set; }
 
         public virtual Författare Författar { get; set; } = null!;
+
+
     }
 }

@@ -7,10 +7,8 @@ using Bokhandel.Models;
 
 namespace Bokhandel.DataAccess.Repositories.Interfaces
 {
-    public interface ILagerSaldoRepository
+    public interface IBöckerRepository
     {
-        public List<LagerSaldo> GetAllStockBalance(int storeId);
-        public void AddBook(Butiker butik, Böcker book, LagerSaldo lagersaldo);
-
+        public List<Böcker> GetAll();
     }
 }

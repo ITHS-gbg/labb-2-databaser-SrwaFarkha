@@ -24,7 +24,8 @@ class Program
     {
         services
             .AddSingleton<IButikerRepository, ButikerRepository>()
-            .AddSingleton<ILagerSaldoRepository, LagerSaldoRepository>();
+            .AddSingleton<ILagerSaldoRepository, LagerSaldoRepository>()
+            .AddSingleton<IBöckerRepository, BöckerRepository>();
 
     }
 }
@@ -33,16 +34,24 @@ public class Executor
 {
     private readonly IButikerRepository _butikerRepository;
     private readonly ILagerSaldoRepository _lagerSaldoRepository;
+    private readonly IBöckerRepository _böckerRepository;
 
-    public Executor(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository)
+
+
+    public Executor(
+        IButikerRepository butikerRepository, 
+        ILagerSaldoRepository lagerSaldoRepository, 
+        IBöckerRepository böckerRepository)
     {
         _butikerRepository = butikerRepository;
         _lagerSaldoRepository = lagerSaldoRepository;
+        _böckerRepository = böckerRepository;
     }
+
 
     public void Execute()
     {
-        Bookstore bookstore = new Bookstore(_butikerRepository, _lagerSaldoRepository);
+        Bookstore bookstore = new Bookstore(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
         bookstore.BookstoreStartNavigate();
     }
 }

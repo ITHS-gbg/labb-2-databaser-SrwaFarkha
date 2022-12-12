@@ -27,5 +27,10 @@ namespace Bokhandel.DataAccess.Repositories
                 .ToList();
             return stockBalance;
         }
+
+        public void AddBook(Butiker butik, Böcker book, LagerSaldo lagersaldo)
+        {
+            var newBook = _dbContext.LagerSaldo.Add(lagersaldo);
+        }
     }
 }

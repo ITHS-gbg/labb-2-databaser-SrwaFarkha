@@ -14,11 +14,13 @@ namespace Bokhandel
         //Dependency injection - Hämta data från repository
         private readonly IButikerRepository _butikerRepository;
         private readonly ILagerSaldoRepository _lagerSaldoRepository;
-        
-        public Bookstore(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository)
+        private readonly IBöckerRepository _böckerRepository;
+
+        public Bookstore(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository, IBöckerRepository böckerRepository)
         {
             _butikerRepository = butikerRepository;
             _lagerSaldoRepository = lagerSaldoRepository;
+            _böckerRepository = böckerRepository;
         }
 
         public void BookstoreStartNavigate()
@@ -89,6 +91,7 @@ namespace Bokhandel
                     ShowStockBalance(bookstore);
                     break;
                 case "2":
+                    AddOrRemoveBooks(bookstore);
                     break;
             }
         }
@@ -118,7 +121,95 @@ namespace Bokhandel
                     BookstoreMainMenu(bookstore);
                 }
             }
-           
         }
+
+        public void AddOrRemoveBooks(Butiker bookstore)
+        {
+            Console.Clear();
+            Console.WriteLine("------------------------------");
+            Console.WriteLine($"You are in {bookstore.Namn}");
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("Do you like to add or remove books?");
+            Console.WriteLine("1. Add books");
+            Console.WriteLine("2. Remove books");
+            string addOrRemove = Console.ReadLine();
+
+            switch (addOrRemove)
+            {
+                case "1":
+                    AddBook(bookstore);
+                    break;
+                case "2":
+                    Console.WriteLine("Remove work");
+                    break;
+            }
+        }
+        public void AddBook(Butiker bookstore)
+        {
+            var books = _böckerRepository.GetAll();
+            bool isContinueAddingBooks = true;
+            while (isContinueAddingBooks)
+            {
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"You are adding books in {bookstore.Namn} ");
+                Console.WriteLine("------------------------------");
+                int counter = 1;
+
+                var dictionary = new Dictionary<int, Böcker>();
+                foreach (var book in books)
+                {
+                    dictionary.Add(counter, book);
+                    //Console.WriteLine($"{counter}. {book.Titel}");
+                    counter++;
+                }
+
+                foreach (var book in dictionary)
+                {
+                    Console.WriteLine($"{book.Key}. {book.Value.Titel}");
+                }
+
+
+                Console.WriteLine("\nPick the book you would like to add: ");
+                int userInput = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("How many of this book would you like to add?");
+                int bookCountToAdd = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Thank you, we will add the book you picked.");
+
+
+                foreach (var book in dictionary)
+                {
+                    if (userInput == book.Key)
+                    {
+                        var lagersaldo = new LagerSaldo
+                        {
+                            ButikId = bookstore.ButikId,
+                            Isbn = book.Value.Isbn13,
+                            Antal = bookCountToAdd
+                        };
+
+                        _lagerSaldoRepository.AddBook(bookstore, book.Value,lagersaldo);
+                    }
+                }
+
+                
+
+
+
+
+                Console.WriteLine("Would you like to add more? y/n");
+                string addMoreBooks = Console.ReadLine();
+                if (addMoreBooks == "y")
+                {
+                    continue;
+                }
+                else
+                {
+                    isContinueAddingBooks = false;
+                    BookstoreMainMenu(bookstore);
+                }
+            }
+        }
+
     }
 }
