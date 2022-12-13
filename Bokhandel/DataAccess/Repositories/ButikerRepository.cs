@@ -1,10 +1,10 @@
-﻿using Bokhandel.Models;
-using Bokhandel.Repositories.Interfaces;
+﻿using Bokhandel.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bokhandel.Model;
 
 namespace Bokhandel.DataAccess.Repositories
 {

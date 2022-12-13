@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bokhandel.DataAccess.Repositories.Interfaces;
-using Bokhandel.Models;
+using Bokhandel.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -28,9 +28,22 @@ namespace Bokhandel.DataAccess.Repositories
             return stockBalance;
         }
 
-        public void AddBook(Butiker butik, Böcker book, LagerSaldo lagersaldo)
+        public void AddBook(LagerSaldo lagersaldo)
         {
-            var newBook = _dbContext.LagerSaldo.Add(lagersaldo);
+            var stockBalance = _dbContext.LagerSaldo.Where(x => x.ButikId == lagersaldo.ButikId).ToList();
+
+            var isNewBook = stockBalance.Any(x => x.Isbn == lagersaldo.Isbn);
+
+            if (!isNewBook)
+            {
+                _dbContext.LagerSaldo.Add(lagersaldo);
+            }
+            else
+            {
+                stockBalance.First(x => x.Isbn == lagersaldo.Isbn).Antal += lagersaldo.Antal;
+            }
+
+            _dbContext.SaveChanges();
         }
     }
 }

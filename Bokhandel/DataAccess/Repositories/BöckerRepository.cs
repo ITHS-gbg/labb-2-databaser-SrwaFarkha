@@ -1,5 +1,5 @@
 ﻿using Bokhandel.DataAccess.Repositories.Interfaces;
-using Bokhandel.Models;
+using Bokhandel.Model;
 
 namespace Bokhandel.DataAccess.Repositories;
 

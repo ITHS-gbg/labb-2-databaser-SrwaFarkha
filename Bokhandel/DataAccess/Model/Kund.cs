@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bokhandel.Models
+namespace Bokhandel.Model
 {
-    public partial class Butiker
+    public partial class Kund
     {
-        public Butiker()
+        public Kund()
         {
             Ordrars = new HashSet<Ordrar>();
         }
 
-        public int ButikId { get; set; }
-        public string Namn { get; set; } = null!;
+        public int KundId { get; set; }
+        public string Förnamn { get; set; } = null!;
+        public string Efternamn { get; set; } = null!;
         public string Adress { get; set; } = null!;
         public int Postnummer { get; set; }
         public string Stad { get; set; } = null!;
+        public int Telefonnummer { get; set; }
 
         public virtual ICollection<Ordrar> Ordrars { get; set; }
     }

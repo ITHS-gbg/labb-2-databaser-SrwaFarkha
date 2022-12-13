@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bokhandel.DataAccess.Repositories.Interfaces;
-using Bokhandel.Models;
+using Bokhandel.Model;
 using Bokhandel.Repositories.Interfaces;
 
 namespace Bokhandel
@@ -188,14 +188,9 @@ namespace Bokhandel
                             Antal = bookCountToAdd
                         };
 
-                        _lagerSaldoRepository.AddBook(bookstore, book.Value,lagersaldo);
+                        _lagerSaldoRepository.AddBook(lagersaldo);
                     }
                 }
-
-                
-
-
-
 
                 Console.WriteLine("Would you like to add more? y/n");
                 string addMoreBooks = Console.ReadLine();

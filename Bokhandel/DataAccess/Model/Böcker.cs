@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Console = System.Console;
 
-namespace Bokhandel.Models
+namespace Bokhandel.Model
 {
     public partial class Böcker
     {
+        public Böcker()
+        {
+            LagerSaldos = new HashSet<LagerSaldo>();
+        }
+
         public string Isbn13 { get; set; } = null!;
         public string Titel { get; set; } = null!;
         public string Språk { get; set; } = null!;
@@ -14,7 +18,6 @@ namespace Bokhandel.Models
         public int FörfattarId { get; set; }
 
         public virtual Författare Författar { get; set; } = null!;
-
-
+        public virtual ICollection<LagerSaldo> LagerSaldos { get; set; }
     }
 }

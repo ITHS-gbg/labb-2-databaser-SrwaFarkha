@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Bokhandel.Models
+namespace Bokhandel.Model
 {
     public partial class BokhandelContext : DbContext
     {
         public BokhandelContext()
         {
-            
         }
 
         public BokhandelContext(DbContextOptions<BokhandelContext> options)
@@ -30,7 +28,8 @@ namespace Bokhandel.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-BJNMTCA;Initial Catalog=Bokhandel;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=DESKTOP-BJNMTCA;Database=Bokhandel;Trusted_Connection=True;");
             }
         }
 
@@ -38,24 +37,24 @@ namespace Bokhandel.Models
         {
             modelBuilder.Entity<Butiker>(entity =>
             {
-                entity.HasKey(e => e.ButikId);
+                entity.HasKey(e => e.ButikId)
+                    .HasName("PK__Butiker__B5D66BFAB32AC8DD");
 
                 entity.ToTable("Butiker");
 
-                entity.Property(e => e.ButikId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ButikID");
+                entity.Property(e => e.ButikId).HasColumnName("ButikID");
 
-                entity.Property(e => e.Adress).HasMaxLength(50);
+                entity.Property(e => e.Adress).HasMaxLength(55);
 
-                entity.Property(e => e.Namn).HasMaxLength(50);
+                entity.Property(e => e.Namn).HasMaxLength(55);
 
-                entity.Property(e => e.Stad).HasMaxLength(50);
+                entity.Property(e => e.Stad).HasMaxLength(55);
             });
 
             modelBuilder.Entity<Böcker>(entity =>
             {
-                entity.HasKey(e => e.Isbn13);
+                entity.HasKey(e => e.Isbn13)
+                    .HasName("PK__Böcker__3BF79E032D482AA6");
 
                 entity.ToTable("Böcker");
 
@@ -67,9 +66,9 @@ namespace Bokhandel.Models
 
                 entity.Property(e => e.Pris).HasColumnType("smallmoney");
 
-                entity.Property(e => e.Språk).HasMaxLength(50);
+                entity.Property(e => e.Språk).HasMaxLength(55);
 
-                entity.Property(e => e.Titel).HasMaxLength(50);
+                entity.Property(e => e.Titel).HasMaxLength(55);
 
                 entity.Property(e => e.Utgivningsdatum).HasColumnType("date");
 
@@ -84,54 +83,48 @@ namespace Bokhandel.Models
             {
                 entity.ToTable("Författare");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.Efternamn).HasMaxLength(50);
+                entity.Property(e => e.Efternamn).HasMaxLength(55);
 
                 entity.Property(e => e.Födelsedatum).HasColumnType("date");
 
-                entity.Property(e => e.Förnamn).HasMaxLength(50);
+                entity.Property(e => e.Förnamn).HasMaxLength(55);
             });
 
             modelBuilder.Entity<Kund>(entity =>
             {
                 entity.ToTable("Kund");
 
-                entity.Property(e => e.KundId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("KundID");
+                entity.Property(e => e.KundId).HasColumnName("KundID");
 
-                entity.Property(e => e.Adress).HasMaxLength(50);
+                entity.Property(e => e.Adress).HasMaxLength(55);
 
-                entity.Property(e => e.Efternamn).HasMaxLength(50);
+                entity.Property(e => e.Efternamn).HasMaxLength(55);
 
-                entity.Property(e => e.Förnamn).HasMaxLength(50);
+                entity.Property(e => e.Förnamn).HasMaxLength(55);
 
-                entity.Property(e => e.Stad).HasMaxLength(50);
+                entity.Property(e => e.Stad).HasMaxLength(55);
             });
 
             modelBuilder.Entity<LagerSaldo>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("LagerSaldo");
 
-                entity.Property(e => e.ButikId).HasColumnName("ButikID");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Isbn)
                     .HasMaxLength(13)
                     .HasColumnName("ISBN");
 
                 entity.HasOne(d => d.Butik)
-                    .WithMany()
+                    .WithMany(p => p.LagerSaldos)
                     .HasForeignKey(d => d.ButikId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LagerSaldo_Butiker");
 
                 entity.HasOne(d => d.IsbnNavigation)
-                    .WithMany()
+                    .WithMany(p => p.LagerSaldos)
                     .HasForeignKey(d => d.Isbn)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LagerSaldo_Böcker");
@@ -139,25 +132,24 @@ namespace Bokhandel.Models
 
             modelBuilder.Entity<Ordrar>(entity =>
             {
-                entity.HasKey(e => e.OrderId);
+                entity.HasKey(e => e.OrderId)
+                    .HasName("PK__Ordrar__C3905BAF8E4ADDFD");
 
                 entity.ToTable("Ordrar");
 
-                entity.Property(e => e.OrderId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("OrderID");
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
                 entity.Property(e => e.ButikId).HasColumnName("ButikID");
 
                 entity.Property(e => e.KundId).HasColumnName("KundID");
 
-                entity.Property(e => e.LeveransAdress).HasMaxLength(50);
+                entity.Property(e => e.Leveransadress).HasMaxLength(55);
 
-                entity.Property(e => e.LeveransDatum).HasColumnType("date");
+                entity.Property(e => e.Leveransdatum).HasColumnType("date");
 
                 entity.Property(e => e.OrderDatum).HasColumnType("date");
 
-                entity.Property(e => e.Stad).HasMaxLength(50);
+                entity.Property(e => e.Stad).HasMaxLength(55);
 
                 entity.HasOne(d => d.Butik)
                     .WithMany(p => p.Ordrars)

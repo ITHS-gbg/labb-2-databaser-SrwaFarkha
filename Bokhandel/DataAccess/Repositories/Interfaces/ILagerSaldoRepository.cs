@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bokhandel.Models;
+using Bokhandel.Model;
 
 namespace Bokhandel.DataAccess.Repositories.Interfaces
 {
     public interface ILagerSaldoRepository
     {
         public List<LagerSaldo> GetAllStockBalance(int storeId);
-        public void AddBook(Butiker butik, Böcker book, LagerSaldo lagersaldo);
+        public void AddBook(LagerSaldo lagersaldo);
 
     }
 }

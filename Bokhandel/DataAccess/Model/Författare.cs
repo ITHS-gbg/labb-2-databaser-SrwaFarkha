@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Bokhandel.Models
+namespace Bokhandel.Model
 {
     public partial class Författare
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bokhandel.Models;
+using Bokhandel.Model;
 
 namespace Bokhandel.Repositories.Interfaces
 {
