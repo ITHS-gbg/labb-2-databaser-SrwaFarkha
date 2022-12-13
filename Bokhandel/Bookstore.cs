@@ -23,32 +23,6 @@ namespace Bokhandel
             _böckerRepository = böckerRepository;
         }
 
-        public void BookstoreStartNavigate()
-        {
-            bool isCountinueNavigate = true;
-            while (isCountinueNavigate)
-            {
-                Console.WriteLine("------------------------------");
-                Console.WriteLine("Choose what you would like to do:");
-                Console.WriteLine("1. Go to bookstores");
-                Console.WriteLine("2. Add a new title");
-                string userInputNav = Console.ReadLine();
-
-                switch (userInputNav)
-                {
-                    case "1":
-                        isCountinueNavigate = false;
-                        ChooseBookStore();
-                        break;
-                    case "2":
-                        isCountinueNavigate = false;
-                        Console.WriteLine("To add new title method");
-                        break;
-                }
-
-                break;
-            }
-        }
 
         public void ChooseBookStore()
         {
