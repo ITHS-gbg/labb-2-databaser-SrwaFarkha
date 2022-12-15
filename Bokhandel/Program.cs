@@ -51,7 +51,13 @@ public class Executor
 
     public void Execute()
     {
-        BookstoreNavigate bookstore = new BookstoreNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
-        bookstore.BookstoreStartNavigate();
+        AppNavigate bookstore = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+        bookstore.AppStartNavigate();
+
+        AppNavigate bookManagement = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+        bookManagement.AppStartNavigate();
+
+
+
     }
 }

@@ -5,16 +5,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bokhandel.Model;
 
 namespace Bokhandel
 {
-    public class BookstoreNavigate
+    public class AppNavigate
     {
         private readonly IButikerRepository _butikerRepository;
         private readonly ILagerSaldoRepository _lagerSaldoRepository;
         private readonly IBöckerRepository _böckerRepository;
 
-        public BookstoreNavigate(
+        public AppNavigate(
             IButikerRepository butikerRepository, 
             ILagerSaldoRepository lagerSaldoRepository, 
             IBöckerRepository böckerRepository)
@@ -24,7 +25,7 @@ namespace Bokhandel
             _böckerRepository = böckerRepository;
         }
 
-        public void BookstoreStartNavigate()
+        public void AppStartNavigate()
         {
             bool isCountinueNavigate = true;
             while (isCountinueNavigate)
@@ -45,7 +46,8 @@ namespace Bokhandel
                         break;
                     case "2":
                         isCountinueNavigate = false;
-                        Console.WriteLine("To book management");
+                        BookManagement bookManagement = new BookManagement(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+                        bookManagement.BookManagementStartNavigate();
                         break;
                 }
             }

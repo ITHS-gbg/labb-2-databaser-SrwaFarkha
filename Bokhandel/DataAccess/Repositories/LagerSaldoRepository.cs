@@ -67,9 +67,7 @@ namespace Bokhandel.DataAccess.Repositories
 
             _dbContext.SaveChanges();
             // _dbContext.LagerSaldo.Remove(lagersaldo);
-
-
-
         }
+
     }
 }

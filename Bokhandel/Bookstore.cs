@@ -36,14 +36,14 @@ namespace Bokhandel
                 Console.WriteLine("Choose a book store:");
                 bookstores.ForEach(x => Console.WriteLine($"{x.ButikId}. {x.Namn}"));
                 Console.WriteLine("------------------------------");
-                Console.WriteLine($"Go back with 'b' ");
+                Console.WriteLine("Go back with 'b' ");
                 string userInputBookstore = Console.ReadLine();
                 
                 if (userInputBookstore == "b")
                 {
                     isContinueChooseBookstore = false;
-                    BookstoreNavigate bookstoreNavigate = new BookstoreNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
-                    bookstoreNavigate.BookstoreStartNavigate();
+                    AppNavigate bookstoreNavigate = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+                    bookstoreNavigate.AppStartNavigate();
                 }
 
                 foreach (var bookstore in bookstores)
