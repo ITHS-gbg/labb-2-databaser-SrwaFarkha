@@ -11,6 +11,9 @@ namespace Bokhandel.DataAccess.Repositories.Interfaces
     {
         public List<LagerSaldo> GetAllStockBalance(int storeId);
         public void AddBook(LagerSaldo lagersaldo);
+        public void RemoveBook(LagerSaldo lagersaldo);
+        public int GetAmountOfTheBook(int butikId, string isbn);
+
 
     }
 }

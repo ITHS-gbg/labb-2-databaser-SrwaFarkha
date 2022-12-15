@@ -28,6 +28,15 @@ namespace Bokhandel.DataAccess.Repositories
             return stockBalance;
         }
 
+        public int GetAmountOfTheBook(int butikId, string isbn)
+        {
+            var amount = _dbContext.LagerSaldo
+                .Where(x => x.ButikId == butikId && x.Isbn == isbn)
+                .Select(x => x.Antal).First();
+            return amount;
+
+        }
+
         public void AddBook(LagerSaldo lagersaldo)
         {
             var stockBalance = _dbContext.LagerSaldo.Where(x => x.ButikId == lagersaldo.ButikId).ToList();
@@ -44,6 +53,23 @@ namespace Bokhandel.DataAccess.Repositories
             }
 
             _dbContext.SaveChanges();
+        }
+
+        public void RemoveBook(LagerSaldo lagersaldo)
+        {
+            var stockBalance = _dbContext.LagerSaldo.Where(x => x.ButikId == lagersaldo.ButikId).ToList();
+
+            var existingBook = stockBalance.Any(x => x.Isbn == lagersaldo.Isbn);
+            if (existingBook)
+            {
+                stockBalance.First(x => x.Isbn == lagersaldo.Isbn).Antal -= lagersaldo.Antal;
+            }
+
+            _dbContext.SaveChanges();
+            // _dbContext.LagerSaldo.Remove(lagersaldo);
+
+
+
         }
     }
 }

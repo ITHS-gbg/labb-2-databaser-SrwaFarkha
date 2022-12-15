@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Bokhandel.DataAccess.Repositories.Interfaces;
 using Bokhandel.Model;
 using Bokhandel.Repositories.Interfaces;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Bokhandel
 {
@@ -16,60 +17,79 @@ namespace Bokhandel
         private readonly ILagerSaldoRepository _lagerSaldoRepository;
         private readonly IBöckerRepository _böckerRepository;
 
-        public Bookstore(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository, IBöckerRepository böckerRepository)
+        public Bookstore(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository,
+            IBöckerRepository böckerRepository)
         {
             _butikerRepository = butikerRepository;
             _lagerSaldoRepository = lagerSaldoRepository;
             _böckerRepository = böckerRepository;
         }
-
-
         public void ChooseBookStore()
         {
-            Console.Clear();
-            var bookstores = _butikerRepository.GetAll();
-
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("Choose a book store:");
-            foreach (var bookstore in bookstores)
+            bool isContinueChooseBookstore = true;
+            while (isContinueChooseBookstore)
             {
-                Console.WriteLine($"{bookstore.ButikId}. {bookstore.Namn}");
-            }
+                Console.Clear();
+                var bookstores = _butikerRepository.GetAll();
 
-            int userInputBookstore = Convert.ToInt32(Console.ReadLine());
-            foreach (var bookstore in bookstores)
-            {
-                if (userInputBookstore == bookstore.ButikId)
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Choose a book store:");
+                bookstores.ForEach(x => Console.WriteLine($"{x.ButikId}. {x.Namn}"));
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"Go back with 'b' ");
+                string userInputBookstore = Console.ReadLine();
+                
+                if (userInputBookstore == "b")
                 {
-                    Console.WriteLine($"You have choosen {bookstore.Namn}");
-                    BookstoreMainMenu(bookstore);
+                    isContinueChooseBookstore = false;
+                    BookstoreNavigate bookstoreNavigate = new BookstoreNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+                    bookstoreNavigate.BookstoreStartNavigate();
                 }
 
+                foreach (var bookstore in bookstores)
+                {
+                    if (userInputBookstore == bookstore.ButikId.ToString())
+                    {
+                        isContinueChooseBookstore = false;
+                        Console.WriteLine($"You have choosen {bookstore.Namn}");
+                        BookstoreMainMenu(bookstore);
+                    }
+                }
             }
         }
-
         public void BookstoreMainMenu(Butiker bookstore)
         {
-            Console.Clear();
-            Console.WriteLine("------------------------------");
-            Console.WriteLine($"You have choosen {bookstore.Namn}");
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("What do you like to do?");
-            Console.WriteLine("1. Show stock balance");
-            Console.WriteLine("2. Add or remove books");
-            
-            string alt = Console.ReadLine();
-            switch (alt)
+            bool isContinueShowMainMenu = true;
+            while (isContinueShowMainMenu)
             {
-                case "1":
-                    ShowStockBalance(bookstore);
-                    break;
-                case "2":
-                    AddOrRemoveBooks(bookstore);
-                    break;
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"You have choosen {bookstore.Namn}");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("What do you like to do?");
+                Console.WriteLine("1. Show stock balance");
+                Console.WriteLine("2. Add or remove books");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Go back with 'b' ");
+
+                string userInput = Console.ReadLine();
+                switch (userInput)
+                {
+                    case "1":
+                        isContinueShowMainMenu = false;
+                        ShowStockBalance(bookstore);
+                        break;
+                    case "2":
+                        isContinueShowMainMenu = false;
+                        AddOrRemoveBooks(bookstore);
+                        break;
+                    case "b":
+                        isContinueShowMainMenu = false;
+                        ChooseBookStore();
+                        break;
+                }
             }
         }
-
         public void ShowStockBalance(Butiker bookstore)
         {
             Console.Clear();
@@ -77,18 +97,15 @@ namespace Bokhandel
             Console.WriteLine("------------------------------");
             var stockBalance = _lagerSaldoRepository.GetAllStockBalance(bookstore.ButikId);
 
-            foreach (var balance in stockBalance)
-            {
-                var totalPrice = balance.Antal * (int)balance.IsbnNavigation.Pris;
-                Console.WriteLine($" Title: '{balance.IsbnNavigation.Titel}' | Amount: {balance.Antal} | Total price: {totalPrice}kr");
-            }
-            Console.WriteLine($"\n Go back with 'b' ");
+            stockBalance.ForEach(x => 
+                Console.WriteLine($" Title: '{x.IsbnNavigation.Titel}' | Amount: {x.Antal} | Total price: {x.Antal * (int)x.IsbnNavigation.Pris}kr"));
+
+            Console.WriteLine("\n Go back with 'b' ");
 
             bool isContinueShowStockBalance = true;
             while (isContinueShowStockBalance)
             {
                 string back = Console.ReadLine();
-
                 if (back == "b")
                 {
                     isContinueShowStockBalance = false;
@@ -96,26 +113,37 @@ namespace Bokhandel
                 }
             }
         }
-
         public void AddOrRemoveBooks(Butiker bookstore)
         {
-            Console.Clear();
-            Console.WriteLine("------------------------------");
-            Console.WriteLine($"You are in {bookstore.Namn}");
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("Do you like to add or remove books?");
-            Console.WriteLine("1. Add books");
-            Console.WriteLine("2. Remove books");
-            string addOrRemove = Console.ReadLine();
-
-            switch (addOrRemove)
+            bool isContinueAddOrRemove = true;
+            while (isContinueAddOrRemove)
             {
-                case "1":
-                    AddBook(bookstore);
-                    break;
-                case "2":
-                    Console.WriteLine("Remove work");
-                    break;
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"You are in {bookstore.Namn}");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Do you like to add or remove books?");
+                Console.WriteLine("1. Add books");
+                Console.WriteLine("2. Remove books");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Go back with 'b' ");
+                string addOrRemove = Console.ReadLine();
+
+                switch (addOrRemove)
+                {
+                    case "1":
+                        isContinueAddOrRemove = false;
+                        AddBook(bookstore);
+                        break;
+                    case "2":
+                        isContinueAddOrRemove = false;
+                        RemoveBook(bookstore);
+                        break;
+                    case "b":
+                        isContinueAddOrRemove = false;
+                        BookstoreMainMenu(bookstore);
+                        break;
+                }
             }
         }
         public void AddBook(Butiker bookstore)
@@ -134,51 +162,156 @@ namespace Bokhandel
                 foreach (var book in books)
                 {
                     dictionary.Add(counter, book);
-                    //Console.WriteLine($"{counter}. {book.Titel}");
+                    counter++;
+                }
+                foreach (var book in dictionary)
+                {
+                    Console.WriteLine($"{book.Key}. {book.Value.Titel}");
+                }
+                Console.WriteLine("\nPick the book you would like to add: ");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Go back with 'b' ");
+                string userInput = Console.ReadLine();
+
+                bool isBookExist = dictionary.Any(x => x.Key.ToString() == userInput);
+                if (userInput == "b")
+                {
+                    AddOrRemoveBooks(bookstore);
+                }
+                if (isBookExist)
+                {
+                    Console.WriteLine("How many of this book would you like to add?");
+                    int amountBookToAdd;
+
+                    while (!int.TryParse(Console.ReadLine(), out amountBookToAdd))
+                        Console.WriteLine("You entered an invalid number, please enter a valid number");
+                    
+                    Console.WriteLine("Thank you, we will add the book you picked.");
+
+                    foreach (var book in dictionary)
+                    {
+                        if (userInput == book.Key.ToString())
+                        {
+                            var lagersaldo = new LagerSaldo
+                            {
+                                ButikId = bookstore.ButikId,
+                                Isbn = book.Value.Isbn13,
+                                Antal = amountBookToAdd
+                            };
+
+                            _lagerSaldoRepository.AddBook(lagersaldo);
+                        }
+                    }
+
+                    Console.WriteLine("Would you like to add more? y/n");
+                    string addMoreBooks = Console.ReadLine();
+                    if (addMoreBooks == "y")
+                        continue;
+                    else
+                    {
+                        isContinueAddingBooks = false;
+                        BookstoreMainMenu(bookstore);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("There is no valid book for that key, please press any key to try again");
+                    Console.ReadKey();
+                }
+            }
+        }
+        public void RemoveBook(Butiker bookstore)
+        {
+            var books = _lagerSaldoRepository.GetAllStockBalance(bookstore.ButikId);
+            bool isContinueRemovingBooks = true;
+            while (isContinueRemovingBooks)
+            {
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"You are removing books in {bookstore.Namn} ");
+                Console.WriteLine("------------------------------");
+                int counter = 1;
+
+                var dictionary = new Dictionary<int, LagerSaldo>();
+                foreach (var book in books)
+                {
+                    dictionary.Add(counter, book);
                     counter++;
                 }
 
                 foreach (var book in dictionary)
                 {
-                    Console.WriteLine($"{book.Key}. {book.Value.Titel}");
+                    Console.WriteLine($"{book.Key}. {book.Value.IsbnNavigation.Titel}");
                 }
 
-
-                Console.WriteLine("\nPick the book you would like to add: ");
-                int userInput = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("How many of this book would you like to add?");
-                int bookCountToAdd = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Thank you, we will add the book you picked.");
-
-
+                Console.WriteLine("\nPick the book you would like to remove: ");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Go back with 'b' ");
+                string userInput = Console.ReadLine();
+                var amount = 0;
+                var title = "";
+                if (userInput == "b")
+                {
+                    AddOrRemoveBooks(bookstore);
+                }
                 foreach (var book in dictionary)
                 {
-                    if (userInput == book.Key)
+                    if (userInput == book.Key.ToString())
                     {
-                        var lagersaldo = new LagerSaldo
-                        {
-                            ButikId = bookstore.ButikId,
-                            Isbn = book.Value.Isbn13,
-                            Antal = bookCountToAdd
-                        };
-
-                        _lagerSaldoRepository.AddBook(lagersaldo);
+                        amount = _lagerSaldoRepository.GetAmountOfTheBook(bookstore.ButikId, book.Value.IsbnNavigation.Isbn13);
+                        title = book.Value.IsbnNavigation.Titel;
                     }
                 }
-
-                Console.WriteLine("Would you like to add more? y/n");
-                string addMoreBooks = Console.ReadLine();
-                if (addMoreBooks == "y")
+                bool isBookExist = dictionary.Any(x => x.Key.ToString() == userInput);
+                if (isBookExist)
                 {
-                    continue;
+                    Console.WriteLine($"We have {amount} books of '{title}' in stock");
+                    Console.WriteLine($"How many of '{title}' would you like to remove?");
+
+                    int amountBookToRemove;
+
+                    while (!int.TryParse(Console.ReadLine(), out amountBookToRemove))
+                    {
+                        Console.WriteLine("You entered an invalid number, please enter a valid number");
+                    }
+                    if (amountBookToRemove > amount)
+                    {
+                        Console.WriteLine("We don't have so many books in stock to remove, please press any key to try again.");
+                        Console.ReadKey();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Thank you, we will remove the book you picked.");
+                        foreach (var book in dictionary)
+                        {
+                            if (userInput == book.Key.ToString())
+                            {
+                                var lagersaldo = new LagerSaldo
+                                {
+                                    ButikId = bookstore.ButikId,
+                                    Isbn = book.Value.IsbnNavigation.Isbn13,
+                                    Antal = amountBookToRemove
+                                };
+                                _lagerSaldoRepository.RemoveBook(lagersaldo);
+                            }
+                        }
+                        Console.WriteLine("Would you like to remove more? y/n");
+                        string removeMoreBooks = Console.ReadLine();
+                        if (removeMoreBooks == "y")
+                            continue;
+                        else
+                        {
+                            isContinueRemovingBooks = false;
+                            BookstoreMainMenu(bookstore);
+                        }
+                    } 
                 }
                 else
                 {
-                    isContinueAddingBooks = false;
-                    BookstoreMainMenu(bookstore);
+                    Console.WriteLine("There is no valid book for that key, please press any key to try again");
+                    Console.ReadKey();
                 }
             }
         }
-
     }
 }

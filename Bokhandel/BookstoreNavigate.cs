@@ -29,6 +29,7 @@ namespace Bokhandel
             bool isCountinueNavigate = true;
             while (isCountinueNavigate)
             {
+                Console.Clear();
                 Console.WriteLine("------------------------------");
                 Console.WriteLine("Choose what you would like to do:");
                 Console.WriteLine("1. Go to bookstores");
@@ -47,8 +48,6 @@ namespace Bokhandel
                         Console.WriteLine("To book management");
                         break;
                 }
-
-                break;
             }
         }
     }
