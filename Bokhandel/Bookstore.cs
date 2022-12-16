@@ -16,6 +16,7 @@ namespace Bokhandel
         private readonly IButikerRepository _butikerRepository;
         private readonly ILagerSaldoRepository _lagerSaldoRepository;
         private readonly IBöckerRepository _böckerRepository;
+        private readonly IFörfattareRepository _författareRepository;
 
         public Bookstore(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository,
             IBöckerRepository böckerRepository)
@@ -42,7 +43,7 @@ namespace Bokhandel
                 if (userInputBookstore == "b")
                 {
                     isContinueChooseBookstore = false;
-                    AppNavigate bookstoreNavigate = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+                    AppNavigate bookstoreNavigate = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository, _författareRepository);
                     bookstoreNavigate.AppStartNavigate();
                 }
 

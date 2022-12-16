@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Bokhandel.Model;
 using System.Diagnostics.Metrics;
+using System.Linq.Expressions;
+using System.Net;
 
 namespace Bokhandel
 {
@@ -15,13 +17,15 @@ namespace Bokhandel
         private readonly IButikerRepository _butikerRepository;
         private readonly ILagerSaldoRepository _lagerSaldoRepository;
         private readonly IBöckerRepository _böckerRepository;
+        private readonly IFörfattareRepository _författareRepository;
 
         public BookManagement(IButikerRepository butikerRepository, ILagerSaldoRepository lagerSaldoRepository,
-            IBöckerRepository böckerRepository)
+            IBöckerRepository böckerRepository, IFörfattareRepository författareRepository)
         {
             _butikerRepository = butikerRepository;
             _lagerSaldoRepository = lagerSaldoRepository;
             _böckerRepository = böckerRepository;
+            _författareRepository = författareRepository;
         }
         public void BookManagementStartNavigate()
         {
@@ -60,20 +64,85 @@ namespace Bokhandel
                         break;
                     case "b":
                         isCountinue = false;
-                        AppNavigate bookManagement = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+                        AppNavigate bookManagement = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository, _författareRepository);
                         bookManagement.AppStartNavigate();
                         break;
-                    
                 }
             }
         }
-        
         public void AddNewBook()
+        {
+            bool isContinueAddNewBook = true;
+            while (isContinueAddNewBook)
+            {
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("You are adding a new book");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Do you want to add a new book with a new author or existing author?"); 
+                Console.WriteLine("1. New author");
+                Console.WriteLine("2. Existing author");
+                Console.WriteLine("3. Want to go back");
+                var userInput = Console.ReadLine();
+                switch (userInput)
+                {
+                    case "1":
+                        isContinueAddNewBook = false;
+                        AddNewAuthor();
+                        break;
+                    case "2":
+                        isContinueAddNewBook = false;
+                        ExistingAuthorForNewBook(null);
+                        break;
+                    case "3":
+                        isContinueAddNewBook = false;
+                        BookManagementStartNavigate();
+                        break;
+                }
+            }
+        }
+        public void ExistingAuthorForNewBook(Författare författare = null)
+        {
+            bool isContinueExistingAuthor = true;
+            while (isContinueExistingAuthor)
+            {
+                if (författare != null)
+                {
+                    StartCreateNewBook(författare);
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine("Pick the author for your new book");
+                    Console.WriteLine("------------------------------");
+                    var counter = 1;
+                    var authors = _författareRepository.GetAll();
+                    var dictionary = new Dictionary<int, Författare>();
+                    foreach (var author in authors)
+                    {
+                        dictionary.Add(counter, author);
+                        counter++;
+                    }
+                    foreach (var author in dictionary)
+                    {
+                        Console.WriteLine($"{author.Key}. {author.Value.Förnamn} {author.Value.Efternamn}");
+                    }
+                    var userInput = Console.ReadLine();
+                }
+                
+            }
+        }
+
+        public void StartCreateNewBook(Författare författare)
         {
             Console.Clear();
             Console.WriteLine("------------------------------");
-            Console.WriteLine("Add new book works");
+            Console.WriteLine($"Creating a new book with the author {författare.Förnamn} {författare.Efternamn}");
+            Console.WriteLine("------------------------------");
+            Console.WriteLine("wip");
             Console.ReadKey();
+
         }
 
         public void EditBook()
@@ -169,18 +238,60 @@ namespace Bokhandel
                     }
                 }
             }
-
         }
 
         public void AddNewAuthor()
         {
-            Console.Clear();
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("Add new author works");
-            Console.ReadKey();
+            bool isContinueAddAuthor = true;
+            while (isContinueAddAuthor)
+            {
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("You are adding a new author");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Are you sure that you want to add new author? Press 'y' for yes or any key for no and go back");
+                var input = Console.ReadLine();
+                if (input == "y")
+                {
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine("You are now adding a new author.");
+                    Console.Write("Write firstname: ");
+                    var firstName = Console.ReadLine();
 
+                    Console.Write("Write lastname: ");
+                    var lastName = Console.ReadLine();
+
+                    Console.Write("Write date of birth: ");
+                    var dateOfBirth = Convert.ToDateTime(Console.ReadLine());
+
+                    var newAuthor = new Författare
+                    {
+                        Förnamn = firstName,
+                        Efternamn = lastName,
+                        Födelsedatum = dateOfBirth
+                    };
+
+                    Console.WriteLine("Congratulations you have created a new author. Would you also like to create a new book with this author? Write any key for adding new book or 'b' for going back.");
+                    _författareRepository.AddNewAuthor(newAuthor);
+                    var userInput = Console.ReadLine();
+
+                    if (userInput == "b")
+                    {
+                        isContinueAddAuthor = false;
+                        BookManagementStartNavigate();
+                    }
+                    else
+                    {
+                        ExistingAuthorForNewBook(newAuthor);
+                    }
+                }
+                else
+                {
+                    isContinueAddAuthor = false;
+                    BookManagementStartNavigate();
+                }
+            }
         }
-
         public void DeleteBook()
         {
             bool isContinueDeleteBook = true;

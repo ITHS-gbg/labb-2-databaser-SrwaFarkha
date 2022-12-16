@@ -25,7 +25,8 @@ class Program
         services
             .AddSingleton<IButikerRepository, ButikerRepository>()
             .AddSingleton<ILagerSaldoRepository, LagerSaldoRepository>()
-            .AddSingleton<IBöckerRepository, BöckerRepository>();
+            .AddSingleton<IBöckerRepository, BöckerRepository>()
+            .AddSingleton<IFörfattareRepository, FörfattareRepository>();
 
     }
 }
@@ -35,29 +36,31 @@ public class Executor
     private readonly IButikerRepository _butikerRepository;
     private readonly ILagerSaldoRepository _lagerSaldoRepository;
     private readonly IBöckerRepository _böckerRepository;
+    private readonly IFörfattareRepository _författareRepository;
+
 
 
 
     public Executor(
         IButikerRepository butikerRepository, 
         ILagerSaldoRepository lagerSaldoRepository, 
-        IBöckerRepository böckerRepository)
+        IBöckerRepository böckerRepository,
+            IFörfattareRepository författareRepository)
     {
         _butikerRepository = butikerRepository;
         _lagerSaldoRepository = lagerSaldoRepository;
         _böckerRepository = böckerRepository;
+        _författareRepository = författareRepository;
     }
 
 
     public void Execute()
     {
-        AppNavigate bookstore = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+        AppNavigate bookstore = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository, _författareRepository);
         bookstore.AppStartNavigate();
 
-        AppNavigate bookManagement = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+        AppNavigate bookManagement = new AppNavigate(_butikerRepository, _lagerSaldoRepository, _böckerRepository, _författareRepository);
         bookManagement.AppStartNavigate();
-
-
-
+        
     }
 }

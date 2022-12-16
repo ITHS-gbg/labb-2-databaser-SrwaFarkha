@@ -14,15 +14,22 @@ namespace Bokhandel
         private readonly IButikerRepository _butikerRepository;
         private readonly ILagerSaldoRepository _lagerSaldoRepository;
         private readonly IBöckerRepository _böckerRepository;
+        private readonly IFörfattareRepository _författareRepository;
+
+
 
         public AppNavigate(
             IButikerRepository butikerRepository, 
             ILagerSaldoRepository lagerSaldoRepository, 
-            IBöckerRepository böckerRepository)
+            IBöckerRepository böckerRepository,
+            IFörfattareRepository författareRepository)
+
         {
             _butikerRepository = butikerRepository;
             _lagerSaldoRepository = lagerSaldoRepository;
             _böckerRepository = böckerRepository;
+            _författareRepository = författareRepository;
+
         }
 
         public void AppStartNavigate()
@@ -46,7 +53,7 @@ namespace Bokhandel
                         break;
                     case "2":
                         isCountinueNavigate = false;
-                        BookManagement bookManagement = new BookManagement(_butikerRepository, _lagerSaldoRepository, _böckerRepository);
+                        BookManagement bookManagement = new BookManagement(_butikerRepository, _lagerSaldoRepository, _böckerRepository,_författareRepository);
                         bookManagement.BookManagementStartNavigate();
                         break;
                 }
