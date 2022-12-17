@@ -11,6 +11,7 @@ namespace Bokhandel.DataAccess.Repositories.Interfaces
     {
         public List<Böcker> GetAll();
         public void DeleteBook(string Isbn);
-        public void EditBook(string Isbn13, Böcker böcker);
+        public void EditBook(string Isbn13, Böcker updateBöcker);
+        public void AddBook(Böcker addBöcker);
     }
 }

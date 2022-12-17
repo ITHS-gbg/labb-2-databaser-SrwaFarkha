@@ -108,7 +108,7 @@ namespace Bokhandel
             {
                 if (författare != null)
                 {
-                    StartCreateNewBook(författare);
+                    StartCreateNewBook(författare.Id);
                 }
                 else
                 {
@@ -116,6 +116,9 @@ namespace Bokhandel
                     Console.WriteLine("------------------------------");
                     Console.WriteLine("Pick the author for your new book");
                     Console.WriteLine("------------------------------");
+                    Console.WriteLine("Go back with 'b'");
+                    Console.WriteLine("------------------------------");
+
                     var counter = 1;
                     var authors = _författareRepository.GetAll();
                     var dictionary = new Dictionary<int, Författare>();
@@ -127,22 +130,90 @@ namespace Bokhandel
                     foreach (var author in dictionary)
                     {
                         Console.WriteLine($"{author.Key}. {author.Value.Förnamn} {author.Value.Efternamn}");
+                       
                     }
                     var userInput = Console.ReadLine();
+                    foreach (var author in dictionary)
+                    {
+                        if (author.Key.ToString() == userInput )
+                        { 
+                            StartCreateNewBook(author.Value.Id); 
+                            break;
+                        }   
+                        else if (userInput == "b")
+                        {
+                           AddNewBook();
+                        }
+                    }
                 }
-                
             }
         }
 
-        public void StartCreateNewBook(Författare författare)
+        public void StartCreateNewBook(int författareId)
         {
-            Console.Clear();
-            Console.WriteLine("------------------------------");
-            Console.WriteLine($"Creating a new book with the author {författare.Förnamn} {författare.Efternamn}");
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("wip");
-            Console.ReadKey();
+            var author = _författareRepository.GetById(författareId);
+            bool isContinueStartCreateNewBook = true;
+            while (isContinueStartCreateNewBook)
+            {
+                Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"Creating a new book with the author {author.Förnamn} {author.Efternamn}");
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Go back with 'b' else press any key to continue");
+                var userInputBack = Console.ReadLine();
+                if (userInputBack == "b")
+                {
+                  AddNewBook();
+                }
+                else
+                {
+                    var userInputIsbn = "";
+                    bool isContinueCountingNumbers = true;
+                    while (isContinueCountingNumbers)
+                    {
+                        Console.WriteLine("Please enter Isbn:");
+                        userInputIsbn = Console.ReadLine();
 
+                        if (userInputIsbn.Length != 13)
+                        {
+                            Console.WriteLine("Please enter a valid isbn, with 13 numbers.");
+                            userInputIsbn = "";
+                        }
+                        else
+                        {
+                            isContinueCountingNumbers = false;
+                        }
+                    }
+
+                    Console.Write("Please enter title:");
+                    var userInputTitle = Console.ReadLine();
+
+                    Console.Write("Please enter language:");
+                    var userInputLanguage = Console.ReadLine();
+
+                    Console.Write("Please enter price:");
+                    int userInputPrice = Convert.ToInt32(Console.ReadLine());
+
+                    Console.Write("Please enter release date:");
+                    var userInputReleaseDate = Convert.ToDateTime(Console.ReadLine());
+
+                    Console.WriteLine("Thank you, we will add this book for you. Press any key to go back.");
+
+                    var newBook = new Böcker
+                    {
+                        Isbn13 = userInputIsbn,
+                        Titel = userInputTitle,
+                        Språk = userInputLanguage,
+                        Pris = userInputPrice,
+                        Utgivningsdatum = userInputReleaseDate,
+                        FörfattarId = författareId
+                    };
+
+                    _böckerRepository.AddBook(newBook);
+                    isContinueStartCreateNewBook = false;
+                    Console.ReadKey();
+                }
+            }
         }
 
         public void EditBook()
@@ -151,6 +222,8 @@ namespace Bokhandel
             while (isContinueEditBook)
             {
                 Console.Clear();
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Edit book menu");
                 Console.WriteLine("------------------------------");
 
                 var counter = 1;
@@ -185,7 +258,6 @@ namespace Bokhandel
                         
                         Console.Clear();
                         Console.WriteLine("------------------------------");
-                        Console.WriteLine($"Isbn13: {item.Value.Isbn13}");
                         Console.WriteLine($"Title: {item.Value.Titel}");
                         Console.WriteLine($"Language: {item.Value.Språk}");
                         Console.WriteLine($"Price: {item.Value.Pris}");
@@ -200,9 +272,6 @@ namespace Bokhandel
 
                         if (userInput == "y")
                         {
-                            Console.Write("Please enter isbn13:");
-                            var userInputIsbn13 = Console.ReadLine();
-
                             Console.Write("Please enter title:");
                             var userInputTitle = Console.ReadLine();
 
@@ -217,17 +286,21 @@ namespace Bokhandel
 
                             Console.Write("Please enter author id:");
                             int userInputAuthorId = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("------------------------------");
+                            Console.WriteLine("Congratulations you have now updated this book");
+                            Console.WriteLine("Press any key to go back to edit book menu");
+                          
+
+                            Console.ReadKey();
 
                             var book = new Böcker
                             {
-                                Isbn13 = userInputIsbn13,
                                 Titel = userInputTitle,
                                 Språk = userInputLanguage,
                                 Pris = userInputPrice,
                                 Utgivningsdatum = userInputReleaseDate,
                                 FörfattarId = userInputAuthorId
                             };
-                            var test = item.Value.Isbn13;
                             _böckerRepository.EditBook(item.Value.Isbn13, book);
                         }
                         else 

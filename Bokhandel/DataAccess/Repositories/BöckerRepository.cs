@@ -1,4 +1,5 @@
-﻿using Bokhandel.DataAccess.Repositories.Interfaces;
+﻿using System.Security.Cryptography.X509Certificates;
+using Bokhandel.DataAccess.Repositories.Interfaces;
 using Bokhandel.Model;
 
 namespace Bokhandel.DataAccess.Repositories;
@@ -26,16 +27,26 @@ public class BöckerRepository : IBöckerRepository
         _dbContext.SaveChanges();
     }
 
-    public void EditBook(string Isbn13, Böcker böcker)
+    public void EditBook(string isbn13, Böcker updateBöcker)
     {
-        var book = _dbContext.Böcker.Where(x =>x.Isbn13 == Isbn13).FirstOrDefault();
+        var book = _dbContext.Böcker.FirstOrDefault(x => x.Isbn13 == isbn13);
 
         if (book != null)
         {
-            _dbContext.Böcker.Update(böcker);
+            book.Titel = updateBöcker.Titel;
+            book.Språk = updateBöcker.Språk;
+            book.Pris = updateBöcker.Pris;
+            book.Utgivningsdatum = updateBöcker.Utgivningsdatum;
+            book.FörfattarId = updateBöcker.FörfattarId;
 
+            _dbContext.Böcker.Update(book);
             _dbContext.SaveChanges();
         }
     }
-   
+
+    public void AddBook(Böcker addBöcker)
+    {
+        _dbContext.Böcker.Add(addBöcker);
+        _dbContext.SaveChanges();
+    }
 }

@@ -12,5 +12,6 @@ namespace Bokhandel.DataAccess.Repositories.Interfaces
         public List<Författare> GetAll();
         public void AddNewAuthor(Författare författare);
 
+        public Författare GetById(int id);
     }
 }

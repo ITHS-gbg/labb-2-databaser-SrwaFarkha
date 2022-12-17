@@ -25,5 +25,11 @@ namespace Bokhandel.DataAccess.Repositories
             _dbContext.Författare.Add(författare);
             _dbContext.SaveChanges();
         }
+
+        public Författare GetById(int id)
+        {
+            var author = _dbContext.Författare.FirstOrDefault(x => x.Id == id);
+            return author;
+        }
     }
 }
