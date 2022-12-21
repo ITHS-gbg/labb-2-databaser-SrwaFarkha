@@ -192,10 +192,26 @@ namespace Bokhandel
                     var userInputLanguage = Console.ReadLine();
 
                     Console.Write("Please enter price:");
-                    int userInputPrice = Convert.ToInt32(Console.ReadLine());
 
+                    int userInputPrice = Convert.ToInt32(Console.ReadLine());
                     Console.Write("Please enter release date:");
-                    var userInputReleaseDate = Convert.ToDateTime(Console.ReadLine());
+
+                    string userInputReleaseDate;
+                    DateTime date = new DateTime();
+                    var isDateInputInvalid = true;
+                    while (isDateInputInvalid)
+                    {
+                        userInputReleaseDate = Console.ReadLine();
+
+                        if (DateTime.TryParse(userInputReleaseDate, out date))
+                        {
+                            isDateInputInvalid = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid date. Please enter with this format yyyy-mm-dd");
+                        }
+                    }
 
                     Console.WriteLine("Thank you, we will add this book for you. Press any key to go back.");
 
@@ -205,7 +221,7 @@ namespace Bokhandel
                         Titel = userInputTitle,
                         Språk = userInputLanguage,
                         Pris = userInputPrice,
-                        Utgivningsdatum = userInputReleaseDate,
+                        Utgivningsdatum = date,
                         FörfattarId = författareId
                     };
 
@@ -282,7 +298,24 @@ namespace Bokhandel
                             int userInputPrice = Convert.ToInt32(Console.ReadLine());
 
                             Console.Write("Please enter release date:");
-                            var userInputReleaseDate = Convert.ToDateTime(Console.ReadLine());
+
+                            string userInputReleaseDate;
+                            DateTime date = new DateTime();
+                            var isDateInputInvalid = true;
+                            while (isDateInputInvalid)
+                            {
+                                userInputReleaseDate = Console.ReadLine();
+
+                                if (DateTime.TryParse(userInputReleaseDate, out date))
+                                {
+                                    isDateInputInvalid = false;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid date. Please enter with this format yyyy-mm-dd");
+                                }
+                            }
+
 
                             Console.Write("Please enter author id:");
                             int userInputAuthorId = Convert.ToInt32(Console.ReadLine());
@@ -298,7 +331,7 @@ namespace Bokhandel
                                 Titel = userInputTitle,
                                 Språk = userInputLanguage,
                                 Pris = userInputPrice,
-                                Utgivningsdatum = userInputReleaseDate,
+                                Utgivningsdatum = date,
                                 FörfattarId = userInputAuthorId
                             };
                             _böckerRepository.EditBook(item.Value.Isbn13, book);
@@ -335,13 +368,29 @@ namespace Bokhandel
                     var lastName = Console.ReadLine();
 
                     Console.Write("Write date of birth: ");
-                    var dateOfBirth = Convert.ToDateTime(Console.ReadLine());
+
+                    string dateOfBirth;
+                    DateTime date = new DateTime();
+                    var isDateInputInvalid = true;
+                    while (isDateInputInvalid)
+                    {
+                        dateOfBirth = Console.ReadLine();
+
+                        if (DateTime.TryParse(dateOfBirth, out date))
+                        {
+                            isDateInputInvalid = false;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid date. Please enter with this format yyyy-mm-dd");
+                        }
+                    }
 
                     var newAuthor = new Författare
                     {
                         Förnamn = firstName,
                         Efternamn = lastName,
-                        Födelsedatum = dateOfBirth
+                        Födelsedatum = date
                     };
 
                     Console.WriteLine("Congratulations you have created a new author. Would you also like to create a new book with this author? Write any key for adding new book or 'b' for going back.");

@@ -204,7 +204,7 @@ namespace Bokhandel
                         }
                     }
 
-                    Console.WriteLine("Would you like to add more? y/n");
+                    Console.WriteLine("Would you like to add more? Press 'y' for yes and any key for going back");
                     string addMoreBooks = Console.ReadLine();
                     if (addMoreBooks == "y")
                         continue;
@@ -267,7 +267,20 @@ namespace Bokhandel
                 if (isBookExist)
                 {
                     Console.WriteLine($"We have {amount} books of '{title}' in stock");
-                    Console.WriteLine($"How many of '{title}' would you like to remove?");
+
+                    if (amount == 0)
+                    {
+                        Console.WriteLine("Please press any key to delete another book.");
+                        Console.ReadKey();
+                        isContinueRemovingBooks = false;
+                        RemoveBook(bookstore);
+                        
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"How many of '{title}' would you like to remove?");
+                    }
 
                     int amountBookToRemove;
 
@@ -296,7 +309,7 @@ namespace Bokhandel
                                 _lagerSaldoRepository.RemoveBook(lagersaldo);
                             }
                         }
-                        Console.WriteLine("Would you like to remove more? y/n");
+                        Console.WriteLine("Would you like to remove more? Press 'y' for yes or press any key to go back");
                         string removeMoreBooks = Console.ReadLine();
                         if (removeMoreBooks == "y")
                             continue;
